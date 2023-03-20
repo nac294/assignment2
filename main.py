@@ -1,6 +1,6 @@
 ##################################################################################################
 # Define a function to calculate BMI
-def get_bmi(height, weight):
+def get_bmi(height, weight) -> float:
 
     # Apply the metric conversions
     weight *= 0.45
@@ -23,7 +23,7 @@ def get_bmi(height, weight):
 
 ##################################################################################################
 # Define a function to print the correct output
-def handle_output(bmi):
+def handle_output(bmi) -> str:
 
     # No one can have a bmi < 0
     # Return a value that will make the code loop again
@@ -33,9 +33,9 @@ def handle_output(bmi):
     # Otherwise, print the user's weight category and break the loop
     if bmi < 18.5:
         return "Underweight"
-    elif 18.5 <= bmi <= 24.9:
+    elif bmi <= 24.9:
         return "Normal weight"
-    elif 25 <= bmi <= 29.9:
+    elif bmi <= 29.9:
         return "Overweight"
     else:
         return "Obese"
@@ -43,7 +43,7 @@ def handle_output(bmi):
 
 ##################################################################################################
 # Define a function to handle the user's input
-def handle_input():
+def handle_input() -> None:
 
     while True:
 
@@ -73,4 +73,10 @@ def handle_input():
 
 
 if __name__ == "__main__":
-    handle_input()
+
+    userChoice = None
+
+    while userChoice != "Y" and userChoice != "y":
+        handle_input()
+        userChoice = input("\nWould you like to exit the program? (Y/y): ")
+        print("\n")
