@@ -48,7 +48,7 @@ def handle_input() -> None:
     while True:
 
         # Get the user's height/weight
-        height = input("Enter your height in feet\n>> ")
+        height = input("Enter your height in feet (Ft.In)\n>> ")
 
         # Convert the user's input to inches
         tempList = height.split(".")
@@ -58,6 +58,11 @@ def handle_input() -> None:
         except IndexError:
             print("Error please input height in this way: Ft.In\n")
             continue
+
+        except ValueError:
+            print("Error please input height in this way: Ft.In\n")
+            continue
+
 
         feet *= 12
         height = feet + inches
