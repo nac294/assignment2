@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% block content %}
+<html>
+
+<head>
+    <link rel="stylesheet" href="/static/home.css">
+</head>
+
+<p id="banner">Bulldog BMI</p>
+
+<h1><strong>Enter your information and calculate some BMIs</strong></h1>
+<body>
+
+<div class="form">
+<form action="#" method="post">
+
+    {% if error %}
+    <p id="error"><strong>Error: </strong>{{ error }}</p>
+    {% endif %}
+
+    <p>
+        <input type="number" placeholder="ft." min=0 name="ft" id="ft" required>
+        <input type="number" placeholder="in." min=0 name="in" id="in" required>
+    </p>
+    <input type="number" placeholder="wt." min=0 name="wt" id="wt" required>
+    <br><br><p><input type="submit" value="submit" name="submit" id="submit"></p>
+</form>
+</div>
+
+{% if BMI %}
+<p id="BMI"><strong>BMI: </strong>{{ BMI }}</p>
+{% endif %}
+
+{% if output %}
+<p id="classification"><strong>Your weight: </strong>{{ output }}</p>
+{% endif %}
+
+</body>
+
+</html>
+{% endblock %}

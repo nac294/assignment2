@@ -1,3 +1,5 @@
+from flask import Flask, render_template, url_for, redirect, request
+
 ##################################################################################################
 # Define a function to calculate BMI
 def get_bmi(height, weight) -> float:
@@ -23,65 +25,64 @@ def get_bmi(height, weight) -> float:
 
 ##################################################################################################
 # Define a function to print the correct output
-def handle_output(bmi) -> str:
+def handle_output(bmi) -> tuple:
 
     # No one can have a bmi < 0
     # Return a value that will make the code loop again
     if bmi <= 0:
-        return "Invalid BMI"
+        return bmi, "Invalid input"
 
     # Otherwise, print the user's weight category and break the loop
     if bmi < 18.5:
-        return "Underweight"
+        return bmi, "Underweight"
     elif bmi <= 24.9:
-        return "Normal weight"
+        return bmi, "Normal weight"
     elif bmi <= 29.9:
-        return "Overweight"
+        return bmi, "Overweight"
     else:
-        return "Obese"
+        return bmi, "Obese"
 
 
 ##################################################################################################
 # Define a function to handle the user's input
-def handle_input() -> None:
+def handle_input(feet, inches, weight) -> tuple:
 
-    while True:
+    # Perform metric conversions
+    feet *= 12
+    height = feet + inches
 
-        # Get the user's height/weight
-        height = input("Enter your height in feet (Ft.In)\n>> ")
-
-        # Convert the user's input to inches
-        tempList = height.split(".")
-        try:
-            feet = float(tempList[0])
-            inches = float(tempList[1])
-        except IndexError:
-            print("Error please input height in this way: Ft.In\n")
-            continue
-
-        except ValueError:
-            print("Error please input height in this way: Ft.In\n")
-            continue
+    # Calculate the BMI and print the result
+    return handle_output(get_bmi(height, weight))
 
 
-        feet *= 12
-        height = feet + inches
+##################################################################################################
+# Define the inner workings of the app
+BMI_app = Flask(__name__)
 
-        weight = float(input("\nEnter your weight in pounds\n>> "))
-        print("\n")
+@BMI_app.route('/home', methods=['POST', 'GET'])
+def home():
 
-        # Calculate the BMI and print the result
-        print(handle_output(get_bmi(height, weight)))
-        break
+    msg = None
+    bmi = None
+    if request.method == "POST":
+        feet = float(request.form.get("ft", False))
+        inches = float(request.form.get("in", False))
+        weight = float(request.form.get("wt", False))
 
-    return
+        print(feet, inches, weight)
+        bmi, msg = handle_input(feet, inches, weight)
+        print(bmi, msg)
+
+        # If the result was invalid, we want to print the error, not the BMI value
+        if msg == "Invalid input":
+            return render_template("home.html", error=msg)
+
+    return render_template("home.html", output=msg, BMI=bmi)
+
+@BMI_app.route('/')
+def init():
+    return redirect(url_for("home"))
 
 
-if __name__ == "__main__":
-
-    userChoice = None
-
-    while userChoice != "Y" and userChoice != "y":
-        handle_input()
-        userChoice = input("\nWould you like to exit the program? (Y/y): ")
-        print("\n")
+if __name__ == '__main__':
+    BMI_app.run(debug=True)
